@@ -6,6 +6,7 @@ const Wheat = {
     stage_1: "🌱",
     stage_2: "🌱",
     stage_3: "🌱",
+    price: 5,
   };
   
   export default Wheat;

@@ -16,12 +16,13 @@ const initialCrop = {
   growthStage: 0,
   isReadyToHarvest: false,
 };
-const initialInventory = Array(27).fill({ cropType: null, quantity: 0 });
+
+
+function App() {
+  const initialInventory = Array(27).fill({ cropType: null, quantity: 0 });
 initialInventory[0] = { cropType: 'Wheat', quantity: 3 };
 initialInventory[1] = { cropType: 'Potato', quantity: 3 };
 initialInventory[2] = { cropType: 'Corn', quantity: 3 };
-
-function App() {
   const [currentTime, setCurrentTime] = useState(0);
   
   const [crops, setCrops] = useState(0);
@@ -69,12 +70,10 @@ function App() {
     updateInventory(inventoryIndex);
   };
   const updateInventory = (inventoryIndex) => {
-    console.log("Updating Inventory");
-    setInventory(prevInventory => {
-      const newInventory = [...prevInventory];
-      newInventory[inventoryIndex].quantity -= 1;
-      return newInventory;
-    });
+    const newInventory = [...inventory];
+    newInventory[inventoryIndex].quantity -= 1;
+    console.log("Decreasing Inventory");
+    setInventory(newInventory);
   };
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -152,15 +151,45 @@ function App() {
   
   
 
-const handleSell = () => {
-    if (crops > 0) {
-      setCrops(crops - 1);
-      setMoney(money + 10); // Earn money for each crop sold
-      setImpactLevel(impactLevel - 5); // Selling crops reduces the impact level
+  const handleSellCrop = (cropType) => {
+    const inventoryIndex = inventory.findIndex(slot => slot.cropType === cropType && slot.quantity > 0);
+    if (inventoryIndex === -1) {
+      alert("No crop of this type to sell.");
+      return;
     }
+
+    const cropToSell = inventory.find(slot => slot.cropType === cropType);
+    console.log("Crop : ", cropToSell.cropType)
+    console.log("Crop details : ", getItem(cropToSell.cropType))
+    const cropPrice = getItem(cropToSell.cropType)?.price; // Assuming you have the price attribute in each crop object
+    console.log("Selling", cropToSell, "for", cropPrice)
+    updateInventory(inventoryIndex);
+    setMoney(prevMoney => prevMoney + cropPrice);
+    console.log("Now my money: ", money)
   };
 const handleSelectCrop = (crop) => {
   setSelectedCrop(crop);
+};
+const getItem = (cropName) => {
+
+  let plant;
+  switch (cropName) {
+    case 'Wheat':
+      plant = Wheat;
+      return plant;
+      break;
+    case 'Potato':
+      plant = Potato;
+      return plant;
+      break;
+    case 'Corn':
+      plant = Corn;
+      return plant;
+      break;
+    default:
+      alert("Invalid crop type.");
+      return;
+  }
 };
 
 
@@ -177,12 +206,11 @@ const handleSelectCrop = (crop) => {
       <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
       <Market money={money} />
       <ImpactMeter impactLevel={impactLevel} />
-      <button onClick={handleSell}>Sell Crops</button>
       <div>
       <h2>Inventory</h2>
       <div className="inventory-slots">
         {inventory.map((slot, index) => (
-          <InventorySlot key={index} cropType={slot.cropType} quantity={slot.quantity} />
+          <InventorySlot key={index} cropType={slot.cropType} quantity={slot.quantity}  onSell={handleSellCrop} />
         ))}
       </div>
     </div>
