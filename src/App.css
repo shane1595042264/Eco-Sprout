@@ -19,3 +19,20 @@
   align-items: center;
   cursor: pointer;
 }
+.title{
+  text-align: center;
+  color: rgb(105, 165, 13);
+  font-family: "Cursive","Brush Script MT";
+}
+.container{
+  background-color: beige;
+  text-align: center;
+  font-family: "Cursive","Brush Script MT";
+} 
+.time{
+   position: 'absolute';
+   top: 0;
+   right: 0;
+   padding: '10px';
+   font-weight: bold;
+}

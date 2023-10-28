@@ -7,7 +7,7 @@ const InventorySlot = ({ cropType, quantity }) => {
     <div className="inventory-slot">
       {cropType && (
         <div>
-          <img src={`${cropType}.png`} alt={cropType} /> {/* Assuming you have images for each crop type */}
+          <img src={`${WheatStage1}.png`} alt={cropType} /> {/* Assuming you have images for each crop type */}
           <span>{quantity}</span>
         </div>
       )}

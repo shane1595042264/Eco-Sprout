@@ -99,8 +99,11 @@ function App() {
 
   return (
     <div>
+      <div className = "container">
+      <div className = "title">
       <h1>EcoSprout: Mini Farm</h1>
-      <div style={{ position: 'absolute', top: 0, right: 0, padding: '10px' }}>
+      </div>
+      <div className ="time">
         Time: {formatTime(currentTime)}
       </div>
       <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} />
@@ -114,6 +117,7 @@ function App() {
           <li key={cropType}>{cropType}: {quantity}</li>
         ))}
       </ul>
+      </div>
     </div>
     </div>
   );
