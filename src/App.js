@@ -18,13 +18,9 @@ const initialCrop = {
   isReadyToHarvest: false,
 };
 
-<<<<<<< Updated upstream
 
 function App() {
   const initialInventory = Array(27).fill({ cropType: null, quantity: 0 });
-=======
-const initialInventory = Array(27).fill({ cropType: null, quantity: 0 });
->>>>>>> Stashed changes
 initialInventory[0] = { cropType: 'Wheat', quantity: 3 };
 initialInventory[1] = { cropType: 'Potato', quantity: 3 };
 initialInventory[2] = { cropType: 'Corn', quantity: 3 };
@@ -214,25 +210,17 @@ const updateWeather = () => {
       <div className = "container">
       <div className = "title">
       <h1>EcoSprout: Mini Farm</h1>
-<<<<<<< Updated upstream
       </div>
-=======
       <div>
-      <h2 className='joe'>Weather</h2>
-      current Weather : {weather}
+        <h2>Weather</h2>
+        current weather: {weather}
       </div>
-      
->>>>>>> Stashed changes
       <CropSelection onSelectCrop={handleSelectCrop} />
       
       <div>
         Current Selected Crop: {selectedCrop}
       </div>
-<<<<<<< Updated upstream
       <div className="time">
-=======
-      <div style={{ position: 'absolute', top: 0, right: 0, padding: '10px',  }}>
->>>>>>> Stashed changes
         Time: {formatTime(currentTime)}
       </div>
       <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
