@@ -12,7 +12,11 @@ const CropSelection = ({ onSelectCrop }) => {
         {crops.map((crop) => (
           <div key={crop} className="crop-item" onClick={() => onSelectCrop(crop)}>
             <img src={`./img/${crop}.png`} alt={crop} />
-            <span>{crop}</span>
+            <span>
+              <div className = "cropSelector">
+              {crop}
+              </div>
+              </span>
           </div>
         ))}
       </div>

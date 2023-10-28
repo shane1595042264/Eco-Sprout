@@ -165,11 +165,13 @@ const handleSelectCrop = (crop) => {
       <div className = "container">
       <div className = "title">
       <h1>EcoSprout: Mini Farm</h1>
+      </div>
       <CropSelection onSelectCrop={handleSelectCrop} />
+      
       <div>
         Current Selected Crop: {selectedCrop}
       </div>
-      <div style={{ position: 'absolute', top: 0, right: 0, padding: '10px' }}>
+      <div className="time">
         Time: {formatTime(currentTime)}
       </div>
       <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
@@ -184,7 +186,7 @@ const handleSelectCrop = (crop) => {
         ))}
       </div>
       
-      </div>
+     
       </div>
     </div>
     </div>
