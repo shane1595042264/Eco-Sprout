@@ -4,7 +4,11 @@ import Market from './components/Market';
 import ImpactMeter from './components/ImpactMeter'; 
 import FieldGrid from './components/FieldGrid';
 import InventorySlot from './components/InventorySlot';
+import CropSelection from './components/CropSelection';
 import './App.css';
+import Wheat from './crops/Wheat';
+import Potato from './crops/Potato';
+import Corn from './crops/Corn';
 
 
 const initialCrop = {
@@ -12,6 +16,10 @@ const initialCrop = {
   growthStage: 0,
   isReadyToHarvest: false,
 };
+const initialInventory = Array(27).fill({ cropType: null, quantity: 0 });
+initialInventory[0] = { cropType: 'Wheat', quantity: 3 };
+initialInventory[1] = { cropType: 'Potato', quantity: 3 };
+initialInventory[2] = { cropType: 'Corn', quantity: 3 };
 
 function App() {
   const [currentTime, setCurrentTime] = useState(0);
@@ -22,11 +30,27 @@ function App() {
   const [money, setMoney] = useState(0);
   const [impactLevel, setImpactLevel] = useState(0);
   const initialField = Array.from({ length: 5 }, () => Array.from({ length: 5 }, () => ({ ...initialCrop })));
+  const [selectedCrop, setSelectedCrop] = useState(null);
 
   const [field, setField] = useState(initialField);
-  const handlePlant = (rowIndex, colIndex) => {
+  const handlePlant = (rowIndex, colIndex, cropType) => {
     const newField = [...field];
-    newField[rowIndex][colIndex] = { type: 'Wheat', growthStage: 1 };
+    let cropToPlant;
+    switch (cropType) {
+      case 'Wheat':
+        cropToPlant = Wheat;
+        break;
+      case 'Potato':
+        cropToPlant = Potato;
+        break;
+      case 'Corn':
+        cropToPlant = Corn;
+        break;
+      default:
+        alert("Please select a crop to plant.");
+        return;
+    }
+    newField[rowIndex][colIndex] = { ...cropToPlant, growthStage: 0 };
     setField(newField);
   };
   useEffect(() => {
@@ -61,38 +85,39 @@ function App() {
     const remainingSeconds = (seconds % 60).toString().padStart(2, '0');
     return `${minutes}:${remainingSeconds}`;
   };
-  
+
   const handleHarvest = (rowIndex, colIndex) => {
     const newField = [...field];
     const crop = newField[rowIndex][colIndex];
   
     if (crop.isReadyToHarvest) {
       // Logic to harvest the crop and update the player's resources
-      console.log(`Harvested ${crop.type}`);
-      setCrops(crops + 1);
-          // Update inventory
-          setInventory((prevInventory) => {
-            const newInventory = [...prevInventory];
-            let added = false;
+      console.log(`Harvested ${crop.name}`);
       
-            for (let i = 0; i < newInventory.length; i++) {
-              if (newInventory[i].cropType === crop.type && newInventory[i].quantity < 64) {
-                newInventory[i].quantity += 1;
-                added = true;
-                break;
-              } else if (!newInventory[i].cropType) {
-                newInventory[i] = { cropType: crop.type, quantity: 1 };
-                added = true;
-                break;
-              }
-            }
-      
-            if (!added) {
-              alert("Inventory is full!");
-            }
-      
-            return newInventory;
-          });
+      // Update inventory
+      setInventory((prevInventory) => {
+        const newInventory = [...prevInventory];
+        let added = false;
+  
+        for (let i = 0; i < newInventory.length; i++) {
+          if (newInventory[i].cropType === crop.name && newInventory[i].quantity < 64) {
+            newInventory[i].quantity += crop.harvestYield;
+            added = true;
+            break;
+          } else if (!newInventory[i].cropType) {
+            newInventory[i] = { cropType: crop.name, quantity: crop.harvestYield };
+            added = true;
+            break;
+          }
+        }
+  
+        if (!added) {
+          alert("Inventory is full!");
+        }
+  
+        return newInventory;
+      });
+  
       // Reset the cell to the initial state
       newField[rowIndex][colIndex] = { ...initialCrop };
     } else {
@@ -102,19 +127,27 @@ function App() {
     setField(newField);
   };
   
+  
 
-  const handleSell = () => {
+const handleSell = () => {
     if (crops > 0) {
       setCrops(crops - 1);
       setMoney(money + 10); // Earn money for each crop sold
       setImpactLevel(impactLevel - 5); // Selling crops reduces the impact level
     }
   };
-  
+  const handleSelectCrop = (crop) => {
+  setSelectedCrop(crop);
+};
+
 
   return (
     <div>
       <h1>EcoSprout: Mini Farm</h1>
+      <CropSelection onSelectCrop={handleSelectCrop} />
+      <div>
+        Current Selected Crop: {selectedCrop}
+      </div>
       <div style={{ position: 'absolute', top: 0, right: 0, padding: '10px' }}>
         Time: {formatTime(currentTime)}
       </div>
