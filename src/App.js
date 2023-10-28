@@ -25,7 +25,7 @@ function App() {
   const [currentTime, setCurrentTime] = useState(0);
   
   const [crops, setCrops] = useState(0);
-  const [inventory, setInventory] = useState(Array(27).fill({ cropType: null, quantity: 0 })); 
+  const [inventory, setInventory] = useState(initialInventory);
 
   const [money, setMoney] = useState(0);
   const [impactLevel, setImpactLevel] = useState(0);
@@ -33,10 +33,25 @@ function App() {
   const [selectedCrop, setSelectedCrop] = useState(null);
 
   const [field, setField] = useState(initialField);
-  const handlePlant = (rowIndex, colIndex, cropType) => {
+  const handlePlant = (rowIndex, colIndex) => {
+    if (!selectedCrop) {
+      alert("Please select a crop to plant.");
+      return;
+    }
+    if (selectedCrop.type) {
+      alert("This field is already occupied. Please select another field.");
+      return;
+    }
+    const inventoryIndex = inventory.findIndex(slot => slot.cropType === selectedCrop && slot.quantity > 0);
+  
+    if (inventoryIndex === -1) {
+      alert("No crop left of this type. Please select another crop.");
+      return;
+    }
+  
     const newField = [...field];
     let cropToPlant;
-    switch (cropType) {
+    switch (selectedCrop) {
       case 'Wheat':
         cropToPlant = Wheat;
         break;
@@ -47,11 +62,19 @@ function App() {
         cropToPlant = Corn;
         break;
       default:
-        alert("Please select a crop to plant.");
+        alert("Invalid crop type.");
         return;
     }
+  
     newField[rowIndex][colIndex] = { ...cropToPlant, growthStage: 0 };
     setField(newField);
+  
+    // Decrease crop count in inventory
+    setInventory(prevInventory => {
+      const newInventory = [...prevInventory];
+      newInventory[inventoryIndex].quantity -= 1;
+      return newInventory;
+    });
   };
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -151,7 +174,7 @@ const handleSell = () => {
       <div style={{ position: 'absolute', top: 0, right: 0, padding: '10px' }}>
         Time: {formatTime(currentTime)}
       </div>
-      <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} />
+      <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
       <Market money={money} />
       <ImpactMeter impactLevel={impactLevel} />
       <button onClick={handleSell}>Sell Crops</button>
