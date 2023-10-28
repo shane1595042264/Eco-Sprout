@@ -11,7 +11,7 @@ function FieldGrid({ field, onPlant, onHarvest, selectedCrop }) {
                 className="field-cell"
                 onClick={() => cell.type ? onHarvest(rowIndex, colIndex) : onPlant(rowIndex, colIndex, selectedCrop)}
               >
-                {cell.type ?  <img src={`./img/${selectedCrop}${cell.growthStage}.png`} alt={selectedCrop} width = "32" height = "32"/> : 'Empty'}
+                {cell.type ?  <img src={`./img/${cell.type}${cell.growthStage}.png`} alt={selectedCrop} width = "32" height = "32"/> : 'Empty'}
               </div>  
               
             ))}
