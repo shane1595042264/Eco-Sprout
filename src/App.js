@@ -3,6 +3,7 @@ import Field from './components/Field';
 import Market from './components/Market'; 
 import ImpactMeter from './components/ImpactMeter'; 
 import FieldGrid from './components/FieldGrid';
+import InventorySlot from './components/InventorySlot';
 import './App.css';
 
 
@@ -16,7 +17,8 @@ function App() {
   const [currentTime, setCurrentTime] = useState(0);
   
   const [crops, setCrops] = useState(0);
-  const [inventory, setInventory] = useState({});
+  const [inventory, setInventory] = useState(Array(27).fill({ cropType: null, quantity: 0 })); 
+
   const [money, setMoney] = useState(0);
   const [impactLevel, setImpactLevel] = useState(0);
   const initialField = Array.from({ length: 5 }, () => Array.from({ length: 5 }, () => ({ ...initialCrop })));
@@ -69,15 +71,28 @@ function App() {
       console.log(`Harvested ${crop.type}`);
       setCrops(crops + 1);
           // Update inventory
-    setInventory((prevInventory) => {
-      const newInventory = { ...prevInventory };
-      if (newInventory[crop.type]) {
-        newInventory[crop.type] += 1;
-      } else {
-        newInventory[crop.type] = 1;
-      }
-      return newInventory;
-    });
+          setInventory((prevInventory) => {
+            const newInventory = [...prevInventory];
+            let added = false;
+      
+            for (let i = 0; i < newInventory.length; i++) {
+              if (newInventory[i].cropType === crop.type && newInventory[i].quantity < 64) {
+                newInventory[i].quantity += 1;
+                added = true;
+                break;
+              } else if (!newInventory[i].cropType) {
+                newInventory[i] = { cropType: crop.type, quantity: 1 };
+                added = true;
+                break;
+              }
+            }
+      
+            if (!added) {
+              alert("Inventory is full!");
+            }
+      
+            return newInventory;
+          });
       // Reset the cell to the initial state
       newField[rowIndex][colIndex] = { ...initialCrop };
     } else {
@@ -109,11 +124,11 @@ function App() {
       <button onClick={handleSell}>Sell Crops</button>
       <div>
       <h2>Inventory</h2>
-      <ul>
-        {Object.entries(inventory).map(([cropType, quantity]) => (
-          <li key={cropType}>{cropType}: {quantity}</li>
+      <div className="inventory-slots">
+        {inventory.map((slot, index) => (
+          <InventorySlot key={index} cropType={slot.cropType} quantity={slot.quantity} />
         ))}
-      </ul>
+      </div>
     </div>
     </div>
   );

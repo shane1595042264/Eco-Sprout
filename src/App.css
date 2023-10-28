@@ -19,3 +19,21 @@
   align-items: center;
   cursor: pointer;
 }
+.inventory-grid {
+  margin-top: 20px;
+}
+
+.inventory-slots {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr); /* 9 columns for example */
+  gap: 10px;
+}
+
+.inventory-slot {
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
