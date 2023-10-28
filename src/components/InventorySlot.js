@@ -1,6 +1,6 @@
 import React from 'react';
 import Wheat from '../crops/Wheat';
-
+import './InventorySlot.css'
 const InventorySlot = ({ cropType, quantity, onSell }) => {
   const imageStyle = {
     maxWidth: '50px', // Maximum width of the image

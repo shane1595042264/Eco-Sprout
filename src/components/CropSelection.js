@@ -1,7 +1,7 @@
 // CropSelection.js
 
 import React from 'react';
-
+import './CropSelection.css'
 const CropSelection = ({ onSelectCrop }) => {
   const crops = ['Wheat', 'Potato', 'Corn'];
 
