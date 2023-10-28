@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useSyncExternalStore } from 'react';
 import Field from './components/Field'; 
 import Market from './components/Market'; 
 import ImpactMeter from './components/ImpactMeter'; 
@@ -9,6 +9,7 @@ import './App.css';
 import Wheat from './crops/Wheat';
 import Potato from './crops/Potato';
 import Corn from './crops/Corn';
+import { getWeather} from './components/Weather';
 
 
 const initialCrop = {
@@ -17,14 +18,18 @@ const initialCrop = {
   isReadyToHarvest: false,
 };
 
+<<<<<<< Updated upstream
 
 function App() {
   const initialInventory = Array(27).fill({ cropType: null, quantity: 0 });
+=======
+const initialInventory = Array(27).fill({ cropType: null, quantity: 0 });
+>>>>>>> Stashed changes
 initialInventory[0] = { cropType: 'Wheat', quantity: 3 };
 initialInventory[1] = { cropType: 'Potato', quantity: 3 };
 initialInventory[2] = { cropType: 'Corn', quantity: 3 };
   const [currentTime, setCurrentTime] = useState(0);
-  
+  const [weather, setWeather] = useState('')
   const [crops, setCrops] = useState(0);
   const [inventory, setInventory] = useState(initialInventory);
 
@@ -82,6 +87,9 @@ initialInventory[2] = { cropType: 'Corn', quantity: 3 };
     }, 1000); // Update every second
     console.log("current Time:", currentTime)
     setCurrentTime(currentTime)
+    if(currentTime % 30 === 0){
+      updateWeather();
+    }
     return () => clearInterval(intervalId); // Cleanup interval on component unmount
   }, []);
 
@@ -192,19 +200,39 @@ const getItem = (cropName) => {
   }
 };
 
+// Function to update the weather
+const updateWeather = () => {
+  const currentWeather = getWeather();
+  setWeather(currentWeather);
+};
+
+//Use useEffect to update the weather every 30 seconds
+
 
   return (
     <div>
       <div className = "container">
       <div className = "title">
       <h1>EcoSprout: Mini Farm</h1>
+<<<<<<< Updated upstream
       </div>
+=======
+      <div>
+      <h2 className='joe'>Weather</h2>
+      current Weather : {weather}
+      </div>
+      
+>>>>>>> Stashed changes
       <CropSelection onSelectCrop={handleSelectCrop} />
       
       <div>
         Current Selected Crop: {selectedCrop}
       </div>
+<<<<<<< Updated upstream
       <div className="time">
+=======
+      <div style={{ position: 'absolute', top: 0, right: 0, padding: '10px',  }}>
+>>>>>>> Stashed changes
         Time: {formatTime(currentTime)}
       </div>
       <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
