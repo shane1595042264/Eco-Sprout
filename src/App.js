@@ -38,10 +38,6 @@ function App() {
       alert("Please select a crop to plant.");
       return;
     }
-    if (selectedCrop.type) {
-      alert("This field is already occupied. Please select another field.");
-      return;
-    }
     const inventoryIndex = inventory.findIndex(slot => slot.cropType === selectedCrop && slot.quantity > 0);
   
     if (inventoryIndex === -1) {
@@ -66,7 +62,7 @@ function App() {
         return;
     }
   
-    newField[rowIndex][colIndex] = { ...cropToPlant, growthStage: 0 };
+    newField[rowIndex][colIndex] = { type: selectedCrop, ...cropToPlant, growthStage: 0 };
     setField(newField);
   
     // Decrease crop count in inventory
@@ -159,7 +155,7 @@ const handleSell = () => {
       setImpactLevel(impactLevel - 5); // Selling crops reduces the impact level
     }
   };
-  const handleSelectCrop = (crop) => {
+const handleSelectCrop = (crop) => {
   setSelectedCrop(crop);
 };
 
