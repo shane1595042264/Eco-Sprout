@@ -1,6 +1,6 @@
 import React from 'react';
 
-function FieldGrid({ field, onPlant, onHarvest }) {
+function FieldGrid({ field, onPlant, onHarvest, selectedCrop }) {
     return (
       <div className="field-grid">
         {field.map((row, rowIndex) => (
@@ -9,7 +9,7 @@ function FieldGrid({ field, onPlant, onHarvest }) {
               <div
                 key={colIndex}
                 className="field-cell"
-                onClick={() => cell.type ? onHarvest(rowIndex, colIndex) : onPlant(rowIndex, colIndex)}
+                onClick={() => cell.type ? onHarvest(rowIndex, colIndex) : onPlant(rowIndex, colIndex, selectedCrop)}
               >
                 {cell.type ? `Crop: ${cell.type}, Stage: ${cell.growthStage}` : 'Empty'}
               </div>
