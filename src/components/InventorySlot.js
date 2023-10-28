@@ -1,7 +1,7 @@
 import React from 'react';
 import Wheat from '../crops/Wheat';
 
-const InventorySlot = ({ cropType, quantity }) => {
+const InventorySlot = ({ cropType, quantity, onSell }) => {
   const imageStyle = {
     maxWidth: '50px', // Maximum width of the image
     maxHeight: '50px', // Maximum height of the image
@@ -10,7 +10,7 @@ const InventorySlot = ({ cropType, quantity }) => {
   };
 
   return (
-    <div className="inventory-slot" style={{ position: 'relative', border: '1px solid #ccc', width: '60px', height: '60px', display: 'inline-block', margin: '5px' }}>
+    <div className="inventory-slot" style={{ position: 'relative', border: '1px solid #ccc', width: '60px', height: '60px', display: 'inline-block', margin: '5px' }} onClick={() => onSell(cropType)}>
       {cropType && (
         <div>
           <img src={`${Wheat}.png`} alt={cropType} /> {/* Assuming you have images for each crop type */}

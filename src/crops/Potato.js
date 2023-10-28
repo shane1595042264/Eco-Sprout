@@ -6,6 +6,7 @@ const Potato = {
     stage_1: "🌱",
     stage_2: "🌱",
     stage_3: "🌱",
+    price: 4,
   };
   
   export default Potato;
