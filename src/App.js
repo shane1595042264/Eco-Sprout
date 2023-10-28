@@ -34,6 +34,7 @@ function App() {
 
   const [field, setField] = useState(initialField);
   const handlePlant = (rowIndex, colIndex) => {
+    console.log("Planting", selectedCrop, "at", rowIndex, colIndex);
     if (!selectedCrop) {
       alert("Please select a crop to plant.");
       return;
@@ -65,7 +66,10 @@ function App() {
     newField[rowIndex][colIndex] = { type: selectedCrop, ...cropToPlant, growthStage: 0 };
     setField(newField);
   
-    // Decrease crop count in inventory
+    updateInventory(inventoryIndex);
+  };
+  const updateInventory = (inventoryIndex) => {
+    console.log("Updating Inventory");
     setInventory(prevInventory => {
       const newInventory = [...prevInventory];
       newInventory[inventoryIndex].quantity -= 1;
@@ -80,7 +84,7 @@ function App() {
     console.log("current Time:", currentTime)
     setCurrentTime(currentTime)
     return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  }, [currentTime]);
+  }, []);
 
   useEffect(() => {
     // Every 10 seconds, update the growth stage of crops
@@ -112,7 +116,7 @@ function App() {
     if (crop.isReadyToHarvest) {
       // Logic to harvest the crop and update the player's resources
       console.log(`Harvested ${crop.name}`);
-      
+
       // Update inventory
       setInventory((prevInventory) => {
         const newInventory = [...prevInventory];
