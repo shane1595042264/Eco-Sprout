@@ -181,15 +181,15 @@ const getItem = (cropName) => {
     case 'Wheat':
       plant = Wheat;
       return plant;
-      break;
+
     case 'Potato':
       plant = Potato;
       return plant;
-      break;
+
     case 'Corn':
       plant = Corn;
       return plant;
-      break;
+
     default:
       alert("Invalid crop type.");
       return;
@@ -203,8 +203,47 @@ const updateWeather = () => {
 };
 
 //Use useEffect to update the weather every 30 seconds
+// Inside the App component
 
+const handleBuy = (cropName) => {
+  const cropItem = getItem(cropName);
+  if (!cropItem) {
+    alert("Invalid crop type.");
+    return;
+  }
 
+  // Check if the player has enough money
+  if (money < cropItem.price) {
+    alert("Not enough money to buy this crop.");
+    return;
+  }
+
+  // Update inventory
+  let added = false;
+  const newInventory = [...inventory];
+  for (let i = 0; i < newInventory.length; i++) {
+    if (newInventory[i].cropType === cropName && newInventory[i].quantity < 64) {
+      newInventory[i].quantity += 1;
+      added = true;
+      break;
+    } else if (!newInventory[i].cropType) {
+      newInventory[i] = { cropType: cropName, quantity: 1 };
+      added = true;
+      break;
+    }
+  }
+
+  if (!added) {
+    alert("Inventory is full!");
+    return;
+  }
+
+  // Deduct the cost from the player's money
+  setMoney(money - cropItem.price);
+
+  // Update the inventory
+  setInventory(newInventory);
+};
   return (
     <div>
       <div className = "container">
@@ -224,7 +263,7 @@ const updateWeather = () => {
         Time: {formatTime(currentTime)}
       </div>
       <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
-      <Market money={money} />
+      <Market money={money} onBuy={handleBuy} />
       <ImpactMeter impactLevel={impactLevel} />
       <div>
       <h2>Inventory</h2>
