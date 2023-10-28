@@ -1,0 +1,16 @@
+.crop-item{
+    width: 60px;
+}
+
+.crop-item:hover{
+    background-color: rgb(239, 239, 130);
+    zoom: 105%;
+    height: 75px;
+    width: 60px;
+    border-bottom: 4px solid black;
+    transition: all 0.2s ease-out;
+    
+}
+.crop-selector{
+    height: 25px;
+}
