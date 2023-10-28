@@ -199,6 +199,7 @@ const getItem = (cropName) => {
 // Function to update the weather
 const updateWeather = () => {
   const currentWeather = getWeather();
+
   setWeather(currentWeather);
 };
 
@@ -252,16 +253,17 @@ const handleBuy = (cropName) => {
       </div>
       <div>
         <h2>Weather</h2>
-        current weather: {weather}
+        Current Weather: {weather}
       </div>
       <CropSelection onSelectCrop={handleSelectCrop} />
       
-      <div>
+      <div className="selected-crop">
         Current Selected Crop: {selectedCrop}
       </div>
       <div className="time">
         Time: {formatTime(currentTime)}
       </div>
+   
       <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
       <Market money={money} onBuy={handleBuy} />
       <ImpactMeter impactLevel={impactLevel} />

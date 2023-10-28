@@ -13,7 +13,7 @@ const CropSelection = ({ onSelectCrop }) => {
           <div key={crop} className="crop-item" onClick={() => onSelectCrop(crop)}>
             <img src={`./img/${crop}.png`} alt={crop} />
             <span>
-              <div className = "cropSelector">
+              <div className = "crop-selector">
               {crop}
               </div>
               </span>

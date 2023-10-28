@@ -13,8 +13,6 @@ const InventorySlot = ({ cropType, quantity, onSell }) => {
     <div className="inventory-slot" style={{ position: 'relative', border: '1px solid #ccc', width: '60px', height: '60px', display: 'inline-block', margin: '5px' }} onClick={() => onSell(cropType)}>
       {cropType && (
         <div>
-          <img src={`${Wheat}.png`} alt={cropType} /> {/* Assuming you have images for each crop type */}
-          <span>{quantity}</span>
           <img src={`./img/${cropType}.png`} alt={cropType} style={imageStyle} />
           <span style={{ position: 'absolute', bottom: '5px', right: '5px', backgroundColor: 'rgba(255, 255, 255, 0.7)', padding: '2px 5px', borderRadius: '5px' }}>{quantity}</span>
         </div>

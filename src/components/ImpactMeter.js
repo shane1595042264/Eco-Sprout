@@ -10,7 +10,8 @@ function ImpactMeter({ impactLevel }) {
 
   return (
     <div>
-      <h3>Environmental Impact Meter</h3>
+      <div className = "meter-title">
+      <h3>Environmental Impact Meter</h3></div>
       <div style={{ border: '1px solid #ccc', width: '100%', height: '20px' }}>
         <div style={meterStyle}></div>
       </div>
