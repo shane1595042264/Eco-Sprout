@@ -90,22 +90,30 @@ initialInventory[2] = { cropType: 'Corn', quantity: 3 };
   }, []);
 
   useEffect(() => {
-    // Every 10 seconds, update the growth stage of crops
-    if (currentTime % 10 === 0) {
-      const newField = field.map((row) =>
-        row.map((crop) => {
-          if (crop.type && crop.growthStage < 3) {
+    // Update the growth stage of crops based on their growth time
+    const newField = field.map((row) =>
+      row.map((crop) => {
+        if (crop.type && crop.growthStage < 3) {
+          const cropItem = getItem(crop.type);
+          if (!cropItem) {
+            return crop; // If crop type is invalid, return the crop as is
+          }
+  
+          // Check if the current time is a multiple of the crop's growth time
+          if (currentTime % cropItem.growthTime === 0) {
             return { ...crop, growthStage: crop.growthStage + 1 };
           }
-          if (crop.growthStage === 3) {
-            return { ...crop, isReadyToHarvest: true };
-          }
-          return crop;
-        })
-      );
-      setField(newField);
-    }
-  }, [currentTime]); 
+        }
+  
+        if (crop.growthStage === 3) {
+          return { ...crop, isReadyToHarvest: true };
+        }
+        return crop;
+      })
+    );
+    setField(newField);
+  }, [currentTime]);
+  
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
     const remainingSeconds = (seconds % 60).toString().padStart(2, '0');
