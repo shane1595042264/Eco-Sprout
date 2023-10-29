@@ -1,4 +1,4 @@
-/* FieldGrid.css */
+
 
 .field-grid {
     display: flex;
@@ -13,26 +13,25 @@
   }
   
   .field-cell {
-    width: 50px; /* Adjust the size as needed */
-    height: 50px; /* Adjust the size as needed */
-    border: 1px solid #8B4513; /* Dark brown border to resemble dirt edges */
+    width: 50px;
+    height: 50px; 
+    border: 1px solid #8B4513; 
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 2px;
     cursor: pointer;
     transition: background-color 0.3s;
-    background-color: rgba(139, 69, 19, 0.5); /* Semi-transparent brown color for dirt */
+    background-color: rgba(139, 69, 19, 0.5); 
   }
   
-  
   .player1-cell {
-    background-color: red; /* Background color for player 1's cells */
+    background-color: red;
   }
   
   .player2-cell {
-    background-color: blue; /* Background color for player 2's cells */
+    background-color: blue;
   }
   
-  /* You can add additional styles below */
+
   

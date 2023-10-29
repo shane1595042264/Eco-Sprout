@@ -52,7 +52,7 @@ function Tutorial() {
             {step === 6 && (
                 <div className="tutorial-step">
                     <h2>5. Selling Crops</h2>
-                    <p>Visit the market to sell your crops. Selling crops will earn you money that you can use to buy more seeds or items from the market.</p>
+                    <p>Visit the inventory to sell your crops. You can sell crops by clicking on each crop in the inventory. Selling crops will earn you money that you can use to buy more seeds or items from the market.</p>
                 </div>
             )}
             {step === 7 && (

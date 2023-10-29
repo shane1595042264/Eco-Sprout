@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 18px; /* Increased font size */
+  font-size: 18px; 
 }
 
 .field-row {
@@ -27,14 +27,14 @@
 .title {
   text-align: center;
   color: rgb(105, 165, 13);
-  font-family: "Roboto", sans-serif; /* Modern and readable font */
-  font-size: 24px; /* Larger font size for title */
+  font-family: "Roboto", sans-serif; 
+  font-size: 24px; 
 }
 
 .container {
   background-color: beige;
   text-align: center;
-  font-family: "Roboto", sans-serif; /* Consistent font throughout */
+  font-family: "Roboto", sans-serif; 
 }
 
 .time {
@@ -52,7 +52,7 @@
 
 .inventory-slots {
   display: grid;
-  grid-template-columns: repeat(9, 1fr); /* 9 columns for example */
+  grid-template-columns: repeat(9, 1fr); 
   gap: 10px;
 }
 
@@ -94,8 +94,8 @@
 
 .market-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Adjust the number of columns as needed */
-  gap: 10px; /* Space between grid items */
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 10px; 
 }
 
 .market-item {
@@ -118,7 +118,7 @@
 }
 
 .market-item img {
-  width: 100px; /* Adjust image size as needed */
+  width: 100px; 
   height: 100px;
   object-fit: contain;
   margin-bottom: 10px;

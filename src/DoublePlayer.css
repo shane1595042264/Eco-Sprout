@@ -6,7 +6,7 @@
   
   .game-board {
     flex: 1;
-    margin-right: 20px; /* Adjust as needed */
+    margin-right: 20px; 
   }
   
   .game-info {
@@ -15,8 +15,8 @@
   
   .inventories {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Adjust the number of columns as needed */
-    gap: 10px; /* Adjust the gap as needed */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 10px; 
   }
   .slogan-banner {
     background-color: #f7f7a6; 
@@ -27,8 +27,8 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   .turn-indicator {
-    background-color: #d1e7dd; /* Light green background */
-    color: #0f5132; /* Dark green text */
+    background-color: #d1e7dd; 
+    color: #0f5132; 
     padding: 10px;
     text-align: center;
     border-radius: 5px;
