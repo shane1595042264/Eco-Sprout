@@ -1,0 +1,42 @@
+/* Header.css */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: transparent; /* Completely transparent background */
+    position: fixed; /* Fix the header to the top */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; /* Ensure the header is above other content */
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-image {
+    height: 50px; /* Adjust the height as needed */
+}
+
+.header-nav {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #fff; /* White color for the links */
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+    background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent black background for links */
+    border-radius: 4px;
+}
+
+.nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.7); /* Darker semi-transparent black for hover effect */
+    border-radius: 4px;
+}

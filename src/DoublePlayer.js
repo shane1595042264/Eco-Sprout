@@ -333,7 +333,6 @@ function DoublePlayer() {
         </div>
         <div className="game-info">
           <Market money={turn === 1 ? player1Money : player2Money} onBuy={handleBuy} />
-          <ImpactMeter impactLevel={impactLevel} />
           <div>
             <h2>Inventory</h2>
             <div className="inventories">

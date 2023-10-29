@@ -330,7 +330,6 @@ const handleBuy = (cropName) => {
    
       <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
       <Market money={money} onBuy={handleBuy} />
-      <ImpactMeter impactLevel={impactLevel} />
       <div>
       <h2>Inventory</h2>
       <div className="inventory-slots">
