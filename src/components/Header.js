@@ -14,6 +14,7 @@ const Header = () => {
       <nav className="header-nav">
         <Link to="/singleplayer" className="nav-link">Single Player</Link>
         <Link to="/doubleplayer" className="nav-link">Double Player</Link>
+        <Link to="/tutorial" className="nav-link">Tutorial</Link>
       </nav>
     </header>
   );

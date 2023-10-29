@@ -4,6 +4,7 @@ import Home from './components/Home';
 import SinglePlayer from './SinglePlayer';
 import DoublePlayer from './DoublePlayer';
 import Header from './components/Header';
+import Tutorial from './components/Tutorial';
 function App() {
   return (
     <Router>
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/singleplayer" element={<SinglePlayer />} />
         <Route path="/doubleplayer" element={<DoublePlayer />} />
+        <Route path="/tutorial" element={<Tutorial />} />
       </Routes>
     </Router>
   );

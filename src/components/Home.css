@@ -31,17 +31,16 @@
   font-size: 3em;
   margin-bottom: 20px;
 }
-
 .button-container {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);  /* Dark background with transparency */
   border-radius: 15px;
   padding: 10px;
-  margin: 10px 0;  
+  margin: 10px 0;  /* Margin to separate the button containers */
   display: inline-block;
 }
 
 button {
-  margin: 0;  
+  margin: 0;  /* Remove margin from individual buttons */
   padding: 10px 20px;
   font-size: 1.2em;
   cursor: pointer;
@@ -51,7 +50,28 @@ button {
   border-radius: 8px;
   transition: background-color 0.3s;
 }
-
 button:hover {
-  background-color: rgba(0, 0, 0, 0.7);  /* Dark background on hover */
+  background-color: #28a745;  /* Bootstrap's success green */
+}
+.button-container .home-button {
+  margin: 0;  /* Remove margin from individual buttons */
+  padding: 10px 20px;
+  font-size: 1.2em;
+  cursor: pointer;
+  background-color: transparent; /* Default background */
+  border: none;
+  color: white;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.button-container .home-button:hover {
+  background-color: #28a745;  /* Bootstrap's success green */
+}
+
+.home-logo {
+  max-width: 400px; /* Adjust this value to set the maximum width of the logo */
+  width: auto; /* Keeps the aspect ratio of the logo */
+  height: auto; /* Adjusts height automatically based on width */
+  margin-bottom: 20px; /* Space between logo and title */
 }

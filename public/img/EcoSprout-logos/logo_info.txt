@@ -1,7 +1,7 @@
 
-            Fonts used: NexaRustSlab-Black 
+            Fonts used: AbrilFatface-Regular,OldStandardTT-Italic 
 
-            Colors used: 4CD4CB,020202  
+            Colors used: 2C3337,AAA8A6  
 
-            Icon url: https://thenounproject.com/term/farm/676080  
+            Icon url: https://thenounproject.com/term/farm/1035095  
         
