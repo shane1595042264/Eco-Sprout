@@ -1,6 +1,6 @@
 ![EcoSprout Logo](logo3.png)
 # EcoSprout: Mini Farm
-Welcome to the magical world of EcoSprout, where farming is not just a chore but an adventure! Our farm introduces strategic farming that encourages sustainable farming practices. Our project is live at: https://ecosprout.fun/
+Welcome to the magical world of EcoSprout, where farming is not just a chore but an adventure! Our farm introduces strategic farming that encourages sustainable farming practices. Our project is live at https://ecosprout.fun/. If the address is not working, you can still go to our Github repository page for local deployment. You can run the app by running `npm install` and then `npm start`. Remember to have Node.js installed on your computer too!
 ## 🌱 Inspiration
 
 In a world where concrete jungles are overtaking green pastures, EcoSprout was born out of a dream to reconnect people with nature. Our inspiration comes from the joy of just watching the seed grow and fulfill our sense of achievement. We wanted to create a virtual farm where players of all ages can experience the wonder of farming, learn about sustainable practices, and have a ton of fun along the way!
