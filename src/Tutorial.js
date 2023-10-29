@@ -1,0 +1,711 @@
+import React, { useState, useEffect, useSyncExternalStore } from 'react';
+import Field from './components/Field'; 
+import Market from './components/Market'; 
+import ImpactMeter from './components/ImpactMeter'; 
+import FieldGrid from './components/FieldGrid';
+import InventorySlot from './components/InventorySlot';
+import CropSelection from './components/CropSelection';
+import Wheat from './crops/Wheat';
+import Potato from './crops/Potato';
+import Corn from './crops/Corn';
+import { getWeather} from './components/Weather';
+import './Tutorial.css';
+
+const initialCrop = {
+    type: null, // Type of crop, null if empty
+    growthStage: 0,
+    isReadyToHarvest: false,
+  };
+
+function Tutorial() {
+    const initialInventory = Array(27).fill({ cropType: null, quantity: 0 });
+initialInventory[0] = { cropType: 'Wheat', quantity: 3 };
+initialInventory[1] = { cropType: 'Potato', quantity: 3 };
+initialInventory[2] = { cropType: 'Corn', quantity: 3 };
+  const [currentTime, setCurrentTime] = useState(0);
+  const [weather, setWeather] = useState('')
+  const [crops, setCrops] = useState(0);
+  const [inventory, setInventory] = useState(initialInventory);
+
+  const [money, setMoney] = useState(0);
+  const [impactLevel, setImpactLevel] = useState(0);
+  const initialField = Array.from({ length: 5 }, () => Array.from({ length: 5 }, () => ({ ...initialCrop })));
+  const [selectedCrop, setSelectedCrop] = useState(null);
+
+  const [field, setField] = useState(initialField);
+  const handlePlant = (rowIndex, colIndex) => {
+    console.log("Planting", selectedCrop, "at", rowIndex, colIndex);
+    if (!selectedCrop) {
+      alert("Please select a crop to plant.");
+      return;
+    }
+    const inventoryIndex = inventory.findIndex(slot => slot.cropType === selectedCrop && slot.quantity > 0);
+  
+    if (inventoryIndex === -1) {
+      alert("No crop left of this type. Please select another crop.");
+      return;
+    }
+  
+    const newField = [...field];
+    let cropToPlant;
+    switch (selectedCrop) {
+      case 'Wheat':
+        cropToPlant = Wheat;
+        break;
+      case 'Potato':
+        cropToPlant = Potato;
+        break;
+      case 'Corn':
+        cropToPlant = Corn;
+        break;
+      default:
+        alert("Invalid crop type.");
+        return;
+    }
+  
+    newField[rowIndex][colIndex] = { type: selectedCrop, ...cropToPlant, growthStage: 0 };
+    setField(newField);
+  
+    updateInventory(inventoryIndex);
+  };
+  const updateInventory = (inventoryIndex) => {
+    const newInventory = [...inventory];
+    newInventory[inventoryIndex].quantity -= 1;
+    console.log("Decreasing Inventory");
+    setInventory(newInventory);
+  };
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      // Update the time every second
+      setCurrentTime((prevTime) => (prevTime + 1) % 86400); // There are 86400 seconds in a day
+    }, 1000); // Update every second
+    console.log("current Time:", currentTime)
+    setCurrentTime(currentTime)
+    if(currentTime % 30 === 0){
+      updateWeather();
+    }
+    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  }, []);
+
+  useEffect(() => {
+    // Update the growth stage of crops based on their growth time
+    const newField = field.map((row) =>
+      row.map((crop) => {
+        if (crop.type && crop.growthStage >= 0 && crop.growthStage < 3) {
+          const cropItem = getItem(crop.type);
+          if (!cropItem) {
+            return crop; // If crop type is invalid, return the crop as is
+          }
+  
+          // Check if the current time is a multiple of the crop's growth time
+          if (currentTime % cropItem.growthTime === 0) {
+            return { ...crop, growthStage: crop.growthStage + 1 };
+          }
+        }
+  
+        if (crop.growthStage === 3) {
+          return { ...crop, isReadyToHarvest: true };
+        }
+        return crop;
+      })
+    );
+    setField(newField);
+  }, [currentTime]);
+  useEffect(() => {
+    const competitionInterval = setInterval(() => {
+      handleCompetition();
+    }, 5000); // Run competition every 5 seconds
+  
+    return () => clearInterval(competitionInterval);
+  }, []); // Empty dependency array
+  
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const remainingSeconds = (seconds % 60).toString().padStart(2, '0');
+    return `${minutes}:${remainingSeconds}`;
+  };
+
+const handleCompetition = () => {
+  setField((prevField) => {
+    const newField = prevField.map((row, rowIndex) =>
+      row.map((crop, colIndex) => {
+        if (crop.type) {
+          const cropItem = getItem(crop.type);
+          let newGrowthStage = crop.growthStage;
+
+          // Check competition with neighbors
+          getNeighbors(rowIndex, colIndex).forEach(([nRow, nCol]) => {
+            const neighborCrop = prevField[nRow][nCol];
+            if (neighborCrop.type && neighborCrop.growthStage >= 0) {
+              const neighborCropItem = getItem(neighborCrop.type);
+
+              // Check if attack is greater than neighbor's defense
+              if (cropItem.attack > neighborCropItem.defense) {
+                newGrowthStage -= 1;
+              }
+            }
+          });
+
+          // Check if the crop is destroyed
+          if (newGrowthStage < 0) {
+            return { ...initialCrop };
+          }
+
+          return { ...crop, growthStage: newGrowthStage };
+        }
+        return crop;
+      })
+    );
+    return newField;
+  });
+};
+
+  
+  // Get neighbors of a given cell
+  const getNeighbors = (row, col) => {
+    const neighbors = [];
+    const directions = [[0, 1], [1, 0], [0, -1], [-1, 0]]; // Right, Down, Left, Up
+    directions.forEach(([dx, dy]) => {
+      const newRow = row + dx;
+      const newCol = col + dy;
+      if (newRow >= 0 && newRow < field.length && newCol >= 0 && newCol < field[0].length) {
+        neighbors.push([newRow, newCol]);
+      }
+    });
+    return neighbors;
+  };
+  const handleHarvest = (rowIndex, colIndex) => {
+    const newField = [...field];
+    const crop = newField[rowIndex][colIndex];
+  
+    if (crop.isReadyToHarvest) {
+      // Logic to harvest the crop and update the player's resources
+      console.log(`Harvested ${crop.name}`);
+
+      // Update inventory
+      setInventory((prevInventory) => {
+        const newInventory = [...prevInventory];
+        let added = false;
+  
+        for (let i = 0; i < newInventory.length; i++) {
+          if (newInventory[i].cropType === crop.name && newInventory[i].quantity < 64) {
+            newInventory[i].quantity += crop.harvestYield;
+            added = true;
+            break;
+          } else if (!newInventory[i].cropType) {
+            newInventory[i] = { cropType: crop.name, quantity: crop.harvestYield };
+            added = true;
+            break;
+          }
+        }
+  
+        if (!added) {
+          alert("Inventory is full!");
+        }
+  
+        return newInventory;
+      });
+  
+      // Reset the cell to the initial state
+      newField[rowIndex][colIndex] = { ...initialCrop };
+    } else {
+      console.log("Crop is not ready to harvest");
+    }
+  
+    setField(newField);
+  };
+  
+  
+
+  const handleSellCrop = (cropType) => {
+    const inventoryIndex = inventory.findIndex(slot => slot.cropType === cropType && slot.quantity > 0);
+    if (inventoryIndex === -1) {
+      alert("No crop of this type to sell.");
+      return;
+    }
+
+    const cropToSell = inventory.find(slot => slot.cropType === cropType);
+    console.log("Crop : ", cropToSell.cropType)
+    console.log("Crop details : ", getItem(cropToSell.cropType))
+    const cropPrice = getItem(cropToSell.cropType)?.price; // Assuming you have the price attribute in each crop object
+    console.log("Selling", cropToSell, "for", cropPrice)
+    updateInventory(inventoryIndex);
+    setMoney(prevMoney => prevMoney + cropPrice);
+    console.log("Now my money: ", money)
+  };
+const handleSelectCrop = (crop) => {
+  setSelectedCrop(crop);
+};
+const getItem = (cropName) => {
+
+  let plant;
+  switch (cropName) {
+    case 'Wheat':
+      plant = Wheat;
+      return plant;
+
+    case 'Potato':
+      plant = Potato;
+      return plant;
+
+    case 'Corn':
+      plant = Corn;
+      return plant;
+
+    default:
+      alert("Invalid crop type.");
+      return;
+  }
+};
+
+// Function to update the weather
+const updateWeather = () => {
+  const currentWeather = getWeather();
+
+  setWeather(currentWeather);
+};
+
+//Use useEffect to update the weather every 30 seconds
+// Inside the App component
+
+const handleBuy = (cropName) => {
+  const cropItem = getItem(cropName);
+  if (!cropItem) {
+    alert("Invalid crop type.");
+    return;
+  }
+
+  // Check if the player has enough money
+  if (money < cropItem.price) {
+    alert("Not enough money to buy this crop.");
+    return;
+  }
+
+  // Update inventory
+  let added = false;
+  const newInventory = [...inventory];
+  for (let i = 0; i < newInventory.length; i++) {
+    if (newInventory[i].cropType === cropName && newInventory[i].quantity < 64) {
+      newInventory[i].quantity += 1;
+      added = true;
+      break;
+    } else if (!newInventory[i].cropType) {
+      newInventory[i] = { cropType: cropName, quantity: 1 };
+      added = true;
+      break;
+    }
+  }
+
+  if (!added) {
+    alert("Inventory is full!");
+    return;
+  }
+
+  // Deduct the cost from the player's money
+  setMoney(money - cropItem.price);
+
+  // Update the inventory
+  setInventory(newInventory);
+};
+    const [step, setStep] = useState(1);
+
+    const nextStep = () => {
+        if (step < 9) {
+            setStep(step + 1);
+        }
+    };
+
+    const prevStep = () => {
+        if (step > 1) {
+            setStep(step - 1);
+        }
+    };
+
+    return (
+        <div className="tutorial-container">
+            <h1>EcoSprout: Mini Farm Tutorial</h1>
+            {step === 1 && (
+                <div className="tutorial-step">
+                    <h2>Welcome to EcoSprout: Mini Farm!</h2>
+                    <p>Here we will give you a tutorial in how to play our game!</p>
+                    <div className="tutorial-navigation">
+                <button onClick={prevStep} disabled={step === 1}>Previous</button>
+                <button onClick={nextStep} disabled={step === 9}>Next</button>
+            </div>
+                    <div>
+      <div className = "container">
+      <div className = "title">
+      <h1>EcoSprout: Mini Farm</h1>
+      </div>
+      <div>
+        <h2>Weather</h2>
+        Current Weather: {weather}
+      </div>
+      <CropSelection onSelectCrop={handleSelectCrop} />
+      
+      <div className="selected-crop">
+        Current Selected Crop: {selectedCrop}
+      </div>
+      <div className="time">
+        Time: {formatTime(currentTime)}
+      </div>
+   
+      <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
+      <Market money={money} onBuy={handleBuy} />
+      <div>
+      <h2>Inventory</h2>
+      <div className="inventory-slots">
+        {inventory.map((slot, index) => (
+          <InventorySlot key={index} cropType={slot.cropType} quantity={slot.quantity}  onSell={handleSellCrop} />
+        ))}
+      </div>
+      
+     
+      </div>
+    </div>
+    </div>
+                </div>
+            )}
+            {step === 2 && (
+                <div className="tutorial-step">
+                    <h2>1. Game Modes</h2>
+                    <p>In Singleplayer mode, you play against the environment, focusing on maximizing your farm's output. In Doubleplayer mode, you compete against another player, adding an element of strategy and competition. The goal of the doubleplayer mode is to completely squeeze the surival space of the other player by planting crops all over the place. </p>
+                    <div className="tutorial-navigation">
+                <button onClick={prevStep} disabled={step === 1}>Previous</button>
+                <button onClick={nextStep} disabled={step === 9}>Next</button>
+            </div>
+                    <div>
+      <div className = "container">
+      <div className = "title">
+      <h1>EcoSprout: Mini Farm</h1>
+      </div>
+      <div>
+        <h2>Weather</h2>
+        Current Weather: {weather}
+      </div>
+      <CropSelection onSelectCrop={handleSelectCrop} />
+      
+      <div className="selected-crop">
+        Current Selected Crop: {selectedCrop}
+      </div>
+      <div className="time">
+        Time: {formatTime(currentTime)}
+      </div>
+   
+      <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
+      <Market money={money} onBuy={handleBuy} />
+      <div>
+      <h2>Inventory</h2>
+      <div className="inventory-slots">
+        {inventory.map((slot, index) => (
+          <InventorySlot key={index} cropType={slot.cropType} quantity={slot.quantity}  onSell={handleSellCrop} />
+        ))}
+      </div>
+      
+     
+      </div>
+    </div>
+    </div>
+                </div>
+            )}
+            {step === 3 && (
+                <div className="tutorial-step">
+                    <h2>2. Starting the Game</h2>
+                    <p>Each player starts with a set of crops in their inventory and some initial money of 50$. While in singleplayer mode, you start with 0. </p>
+                    <div className="tutorial-navigation">
+                <button onClick={prevStep} disabled={step === 1}>Previous</button>
+                <button onClick={nextStep} disabled={step === 9}>Next</button>
+            </div>
+                    <div>
+      <div className = "container">
+      <div className = "title">
+      <h1>EcoSprout: Mini Farm</h1>
+      </div>
+      <div>
+        <h2>Weather</h2>
+        Current Weather: {weather}
+      </div>
+      <CropSelection onSelectCrop={handleSelectCrop} />
+      
+      <div className="selected-crop">
+        Current Selected Crop: {selectedCrop}
+      </div>
+      <div className="time">
+        Time: {formatTime(currentTime)}
+      </div>
+   
+      <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
+      <Market money={money} onBuy={handleBuy} />
+      <div>
+      <h2>Inventory</h2>
+      <div className="inventory-slots">
+        {inventory.map((slot, index) => (
+          <InventorySlot key={index} cropType={slot.cropType} quantity={slot.quantity}  onSell={handleSellCrop} />
+        ))}
+      </div>
+      
+     
+      </div>
+    </div>
+    </div>
+                </div>
+            )}
+            {step === 4 && (
+                <div className="tutorial-step">
+                    <h2>3. Planting Crops</h2>
+                    <p>Select a crop from the bar above the field and click on an empty field tile to plant it. Each crop takes a few turns to grow before it can be harvested.</p>
+                    <div className="tutorial-navigation">
+                <button onClick={prevStep} disabled={step === 1}>Previous</button>
+                <button onClick={nextStep} disabled={step === 9}>Next</button>
+            </div>
+                    <div>
+      <div className = "container">
+      <div className = "title">
+      <h1>EcoSprout: Mini Farm</h1>
+      </div>
+      <div>
+        <h2>Weather</h2>
+        Current Weather: {weather}
+      </div>
+      <CropSelection onSelectCrop={handleSelectCrop} />
+      
+      <div className="selected-crop">
+        Current Selected Crop: {selectedCrop}
+      </div>
+      <div className="time">
+        Time: {formatTime(currentTime)}
+      </div>
+   
+      <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
+      <Market money={money} onBuy={handleBuy} />
+      <div>
+      <h2>Inventory</h2>
+      <div className="inventory-slots">
+        {inventory.map((slot, index) => (
+          <InventorySlot key={index} cropType={slot.cropType} quantity={slot.quantity}  onSell={handleSellCrop} />
+        ))}
+      </div>
+      
+     
+      </div>
+    </div>
+    </div>
+                </div>
+            )}
+            {step === 5 && (
+                <div className="tutorial-step">
+                    <h2>4. Harvesting Crops</h2>
+                    <p>Once a crop is fully grown, you can click on it to harvest. Harvested crops will be added to your inventory.</p>
+                    <div className="tutorial-navigation">
+                <button onClick={prevStep} disabled={step === 1}>Previous</button>
+                <button onClick={nextStep} disabled={step === 9}>Next</button>
+            </div>
+                    <div>
+      <div className = "container">
+      <div className = "title">
+      <h1>EcoSprout: Mini Farm</h1>
+      </div>
+      <div>
+        <h2>Weather</h2>
+        Current Weather: {weather}
+      </div>
+      <CropSelection onSelectCrop={handleSelectCrop} />
+      
+      <div className="selected-crop">
+        Current Selected Crop: {selectedCrop}
+      </div>
+      <div className="time">
+        Time: {formatTime(currentTime)}
+      </div>
+   
+      <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
+      <Market money={money} onBuy={handleBuy} />
+      <div>
+      <h2>Inventory</h2>
+      <div className="inventory-slots">
+        {inventory.map((slot, index) => (
+          <InventorySlot key={index} cropType={slot.cropType} quantity={slot.quantity}  onSell={handleSellCrop} />
+        ))}
+      </div>
+      
+     
+      </div>
+    </div>
+    </div>
+                </div>
+            )}
+            {step === 6 && (
+                <div className="tutorial-step">
+                    <h2>5. Selling Crops</h2>
+                    <p>Visit the market to sell your crops. Selling crops will earn you money that you can use to buy more seeds or items from the market.</p>
+                    <div className="tutorial-navigation">
+                <button onClick={prevStep} disabled={step === 1}>Previous</button>
+                <button onClick={nextStep} disabled={step === 9}>Next</button>
+            </div>
+                    <div>
+      <div className = "container">
+      <div className = "title">
+      <h1>EcoSprout: Mini Farm</h1>
+      </div>
+      <div>
+        <h2>Weather</h2>
+        Current Weather: {weather}
+      </div>
+      <CropSelection onSelectCrop={handleSelectCrop} />
+      
+      <div className="selected-crop">
+        Current Selected Crop: {selectedCrop}
+      </div>
+      <div className="time">
+        Time: {formatTime(currentTime)}
+      </div>
+   
+      <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
+      <Market money={money} onBuy={handleBuy} />
+      <div>
+      <h2>Inventory</h2>
+      <div className="inventory-slots">
+        {inventory.map((slot, index) => (
+          <InventorySlot key={index} cropType={slot.cropType} quantity={slot.quantity}  onSell={handleSellCrop} />
+        ))}
+      </div>
+      
+     
+      </div>
+    </div>
+    </div>
+                </div>
+            )}
+            {step === 7 && (
+                <div className="tutorial-step">
+                    <h2>6. Weather Effects</h2>
+                    <p>Keep an eye on the weather! Some weather conditions can affect the growth of your crops.</p>
+                    <div className="tutorial-navigation">
+                <button onClick={prevStep} disabled={step === 1}>Previous</button>
+                <button onClick={nextStep} disabled={step === 9}>Next</button>
+            </div>
+                    <div>
+      <div className = "container">
+      <div className = "title">
+      <h1>EcoSprout: Mini Farm</h1>
+      </div>
+      <div>
+        <h2>Weather</h2>
+        Current Weather: {weather}
+      </div>
+      <CropSelection onSelectCrop={handleSelectCrop} />
+      
+      <div className="selected-crop">
+        Current Selected Crop: {selectedCrop}
+      </div>
+      <div className="time">
+        Time: {formatTime(currentTime)}
+      </div>
+   
+      <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
+      <Market money={money} onBuy={handleBuy} />
+      <div>
+      <h2>Inventory</h2>
+      <div className="inventory-slots">
+        {inventory.map((slot, index) => (
+          <InventorySlot key={index} cropType={slot.cropType} quantity={slot.quantity}  onSell={handleSellCrop} />
+        ))}
+      </div>
+      
+     
+      </div>
+    </div>
+    </div>
+                </div>
+            )}
+            {step === 8 && (
+                <div className="tutorial-step">
+                    <h2>7. Doubleplayer Specifics</h2>
+                    <p>In Doubleplayer mode, be cautious of neighboring crops. Some crops can attack and reduce the growth stage of your crops. Strategize to protect your crops and maximize yield. The game ends when one player manages to own all the tiles on the field.</p>
+                    <div className="tutorial-navigation">
+                <button onClick={prevStep} disabled={step === 1}>Previous</button>
+                <button onClick={nextStep} disabled={step === 9}>Next</button>
+            </div>
+                    <div>
+      <div className = "container">
+      <div className = "title">
+      <h1>EcoSprout: Mini Farm</h1>
+      </div>
+      <div>
+        <h2>Weather</h2>
+        Current Weather: {weather}
+      </div>
+      <CropSelection onSelectCrop={handleSelectCrop} />
+      
+      <div className="selected-crop">
+        Current Selected Crop: {selectedCrop}
+      </div>
+      <div className="time">
+        Time: {formatTime(currentTime)}
+      </div>
+   
+      <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
+      <Market money={money} onBuy={handleBuy} />
+      <div>
+      <h2>Inventory</h2>
+      <div className="inventory-slots">
+        {inventory.map((slot, index) => (
+          <InventorySlot key={index} cropType={slot.cropType} quantity={slot.quantity}  onSell={handleSellCrop} />
+        ))}
+      </div>
+      
+     
+      </div>
+    </div>
+    </div>
+                </div>
+            )}
+            {step === 9 && (
+                <div className="tutorial-step">
+                    <h2>8. Ending the Game</h2>
+                    <p>The game ends when one player owns all the tiles in Doubleplayer mode. Play strategically to win! You don't win in singleplayer, it is more like a test field</p>
+                    <div className="tutorial-navigation">
+                <button onClick={prevStep} disabled={step === 1}>Previous</button>
+                <button onClick={nextStep} disabled={step === 9}>Next</button>
+            </div>
+                    <div>
+      <div className = "container">
+      <div className = "title">
+      <h1>EcoSprout: Mini Farm</h1>
+      </div>
+      <div>
+        <h2>Weather</h2>
+        Current Weather: {weather}
+      </div>
+      <CropSelection onSelectCrop={handleSelectCrop} />
+      
+      <div className="selected-crop">
+        Current Selected Crop: {selectedCrop}
+      </div>
+      <div className="time">
+        Time: {formatTime(currentTime)}
+      </div>
+   
+      <FieldGrid field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
+      <Market money={money} onBuy={handleBuy} />
+      <div>
+      <h2>Inventory</h2>
+      <div className="inventory-slots">
+        {inventory.map((slot, index) => (
+          <InventorySlot key={index} cropType={slot.cropType} quantity={slot.quantity}  onSell={handleSellCrop} />
+        ))}
+      </div>
+      
+     
+      </div>
+    </div>
+    </div>
+                </div>
+            )}
+
+            
+        </div>
+    );
+}
+
+export default Tutorial;

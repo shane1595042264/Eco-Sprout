@@ -4,7 +4,7 @@ import Home from './components/Home';
 import SinglePlayer from './SinglePlayer';
 import DoublePlayer from './DoublePlayer';
 import Header from './components/Header';
-import Tutorial from './components/Tutorial';
+import Tutorial from './Tutorial';
 function App() {
   return (
     <Router>
