@@ -1,0 +1,36 @@
+/* FieldGrid.css */
+
+.field-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+  }
+  
+  .field-row {
+    display: flex;
+  }
+  
+  .field-cell {
+    width: 50px; /* Adjust the size as needed */
+    height: 50px; /* Adjust the size as needed */
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .player1-cell {
+    background-color: red; /* Background color for player 1's cells */
+  }
+  
+  .player2-cell {
+    background-color: blue; /* Background color for player 2's cells */
+  }
+  
+  /* You can add additional styles below */
+  

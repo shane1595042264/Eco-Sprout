@@ -1,0 +1,23 @@
+
+.game-layout {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .game-board {
+    flex: 1;
+    margin-right: 20px; /* Adjust as needed */
+  }
+  
+  .game-info {
+    flex: 1;
+  }
+  
+  .inventories {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Adjust the number of columns as needed */
+    gap: 10px; /* Adjust the gap as needed */
+  }
+  
+  /* Other styles as needed */
+  
