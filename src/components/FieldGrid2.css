@@ -15,14 +15,16 @@
   .field-cell {
     width: 50px; /* Adjust the size as needed */
     height: 50px; /* Adjust the size as needed */
-    border: 1px solid black;
+    border: 1px solid #8B4513; /* Dark brown border to resemble dirt edges */
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 2px;
     cursor: pointer;
     transition: background-color 0.3s;
+    background-color: rgba(139, 69, 19, 0.5); /* Semi-transparent brown color for dirt */
   }
+  
   
   .player1-cell {
     background-color: red; /* Background color for player 1's cells */

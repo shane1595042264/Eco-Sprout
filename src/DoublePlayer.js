@@ -313,20 +313,36 @@ function DoublePlayer() {
       <div className="title">
         <h1>EcoSprout: Mini Farm</h1>
       </div>
+      <div className="slogan-banner">
+        <h2>🌱 Fill all the cells to win! Become the ultimate Eco-Farmer! 🌾</h2>
+      </div>
       <div className="game-layout">
         <div className="game-board">
-          <div>
-            <h2>Weather</h2>
+        <div className="weather-container">
+          <h2>Weather</h2>
+          <div className="current-weather">
             Current Weather: {weather}
           </div>
+        </div>
           <CropSelection onSelectCrop={handleSelectCrop} />
           <div className="selected-crop">
             Current Selected Crop: {selectedCrop}
           </div>
           <FieldGrid2 field={field} onPlant={handlePlant} onHarvest={handleHarvest} selectedCrop={selectedCrop} />
           <div className="turn-indicator">
-            Current Turn: Player {turn}
-          </div>
+  <h3>
+    {turn === 1 ? (
+      <>
+        <span role="img" aria-label="Player 1">🌱</span> Player 1's Turn
+      </>
+    ) : (
+      <>
+        <span role="img" aria-label="Player 2">🌾</span> Player 2's Turn
+      </>
+    )}
+  </h3>
+</div>
+
           <div className="turn-button">
             <button onClick={handleNextTurn}>Next Turn</button>
           </div>

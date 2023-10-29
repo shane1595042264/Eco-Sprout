@@ -18,6 +18,34 @@
     grid-template-columns: repeat(3, 1fr); /* Adjust the number of columns as needed */
     gap: 10px; /* Adjust the gap as needed */
   }
+  .slogan-banner {
+    background-color: #f7f7a6; 
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .turn-indicator {
+    background-color: #d1e7dd; /* Light green background */
+    color: #0f5132; /* Dark green text */
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+  }
+  .weather-container {
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
   
-  /* Other styles as needed */
+  .current-weather {
+    font-size: 18px;
+    color: #333;
+  }
   
