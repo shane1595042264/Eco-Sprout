@@ -93,7 +93,7 @@ initialInventory[2] = { cropType: 'Corn', quantity: 3 };
     // Update the growth stage of crops based on their growth time
     const newField = field.map((row) =>
       row.map((crop) => {
-        if (crop.type && crop.growthStage < 3) {
+        if (crop.type && crop.growthStage >= 0 && crop.growthStage < 3) {
           const cropItem = getItem(crop.type);
           if (!cropItem) {
             return crop; // If crop type is invalid, return the crop as is
@@ -113,6 +113,13 @@ initialInventory[2] = { cropType: 'Corn', quantity: 3 };
     );
     setField(newField);
   }, [currentTime]);
+  useEffect(() => {
+    const competitionInterval = setInterval(() => {
+      handleCompetition();
+    }, 5000); // Run competition every 5 seconds
+  
+    return () => clearInterval(competitionInterval);
+  }, []); // Empty dependency array
   
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
@@ -120,6 +127,55 @@ initialInventory[2] = { cropType: 'Corn', quantity: 3 };
     return `${minutes}:${remainingSeconds}`;
   };
 
+const handleCompetition = () => {
+  setField((prevField) => {
+    const newField = prevField.map((row, rowIndex) =>
+      row.map((crop, colIndex) => {
+        if (crop.type) {
+          const cropItem = getItem(crop.type);
+          let newGrowthStage = crop.growthStage;
+
+          // Check competition with neighbors
+          getNeighbors(rowIndex, colIndex).forEach(([nRow, nCol]) => {
+            const neighborCrop = prevField[nRow][nCol];
+            if (neighborCrop.type && neighborCrop.growthStage >= 0) {
+              const neighborCropItem = getItem(neighborCrop.type);
+
+              // Check if attack is greater than neighbor's defense
+              if (cropItem.attack > neighborCropItem.defense) {
+                newGrowthStage -= 1;
+              }
+            }
+          });
+
+          // Check if the crop is destroyed
+          if (newGrowthStage < 0) {
+            return { ...initialCrop };
+          }
+
+          return { ...crop, growthStage: newGrowthStage };
+        }
+        return crop;
+      })
+    );
+    return newField;
+  });
+};
+
+  
+  // Get neighbors of a given cell
+  const getNeighbors = (row, col) => {
+    const neighbors = [];
+    const directions = [[0, 1], [1, 0], [0, -1], [-1, 0]]; // Right, Down, Left, Up
+    directions.forEach(([dx, dy]) => {
+      const newRow = row + dx;
+      const newCol = col + dy;
+      if (newRow >= 0 && newRow < field.length && newCol >= 0 && newCol < field[0].length) {
+        neighbors.push([newRow, newCol]);
+      }
+    });
+    return neighbors;
+  };
   const handleHarvest = (rowIndex, colIndex) => {
     const newField = [...field];
     const crop = newField[rowIndex][colIndex];

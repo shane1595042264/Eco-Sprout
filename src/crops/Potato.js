@@ -7,6 +7,8 @@ const Potato = {
     stage_2: "🌱",
     stage_3: "🌱",
     price: 4,
+    attack: 0,
+    defense: 3, 
   };
   
   export default Potato;

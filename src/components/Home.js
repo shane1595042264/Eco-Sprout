@@ -16,7 +16,7 @@ function Home() {
   return (
     <div className="home-container">
       <video autoPlay loop muted className="video-background">
-        <source src="/background.mp4" type="video/mp4" />
+        <source src="./background.mp4" type="video/mp4" />
       </video>
 
       <div className="content">

@@ -6,7 +6,9 @@ const Corn = {
     stage_1: "🌱",
     stage_2: "🌱",
     stage_3: "🌱",
-    price: 6, 
+    price: 6,
+    attack: 2,
+    defense: 2, 
   };
   
   export default Corn;
