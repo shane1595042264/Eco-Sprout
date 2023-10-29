@@ -51,7 +51,7 @@ button {
   transition: background-color 0.3s;
 }
 button:hover {
-  background-color: #28a745;  /* Bootstrap's success green */
+  background-color: #28a745;  
 }
 .button-container .home-button {
   margin: 0;  /* Remove margin from individual buttons */
@@ -70,8 +70,8 @@ button:hover {
 }
 
 .home-logo {
-  max-width: 400px; /* Adjust this value to set the maximum width of the logo */
-  width: auto; /* Keeps the aspect ratio of the logo */
-  height: auto; /* Adjusts height automatically based on width */
-  margin-bottom: 20px; /* Space between logo and title */
+  max-width: 400px; 
+  width: auto;
+  height: auto; 
+  margin-bottom: 20px;
 }
